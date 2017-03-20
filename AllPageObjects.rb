@@ -1,0 +1,5 @@
+require File.expand_path(File.dirname(__FILE__) + '/HomePagePO.rb')
+require File.expand_path(File.dirname(__FILE__) + '/NewsPagePO.rb')
+require File.expand_path(File.dirname(__FILE__) + '/SelectWatchListPagePO.rb')
+require File.expand_path(File.dirname(__FILE__) + '/SettingsPagePO.rb')
+require File.expand_path(File.dirname(__FILE__) + '/MarketsPagePO.rb')

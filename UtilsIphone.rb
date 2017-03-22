@@ -28,7 +28,7 @@ module UtilsIphone
                     return false
                 end
             end
-            todaywatchlist_xpath = "//UIAStaticText[contains(@label,'Events Summary')]"
+            todaywatchlist_xpath = CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath, "Events Summary")
             todaywatchlist = UtilsMobile.GetElementWithXpath(driverEle,todaywatchlist_xpath, 20, false)
             if todaywatchlist == false
                 Log.Error("Test step #{stepId}:Today's events summary doesn't appear after clicked on edit button in home page.")
@@ -62,38 +62,20 @@ module UtilsIphone
         end
             
             if elementName == "Events Summary"
-                tablegroup_xpath = "//UIATableGroup[contains(@name,'Events Summary' )]/following-sibling::UIATableCell" 
-                wndw_xpath ="//UIATableView[1]"
-                tablegroup1_xpath = "//UIATableGroup[contains(@name,'Events Summary' )]"
+                #tablegroup_xpath = "//UIATableGroup[contains(@name,'Events Summary' )]/following-sibling::UIATableCell" 
+                #wndw_xpath ="//UIATableView[1]"
+                tablegroup1_xpath =  CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath, "Events Summary") #"//UIATableGroup[contains(@name,'Events Summary' )]"
                 tablegroupisvisiable = UtilsMobile.GetElementWithXpath(driverEle,tablegroup1_xpath,40,false,nil,true)
                 if tablegroupisvisiable == false
-                    begin
-                        UtilsMobile.ScrollElementToVisibilty(wndw_xpath,tablegroup1_xpath)
-                    rescue Exception => e
-                        if (e.message.include? "scrollToVisible cannot be used because this element has no scrollable ancestor.")
-                                count = count + 1
-                                 if count < 3
-                                   retry
-                                end
-                        end
-                    end
+                    driver.execute_script 'mobile: scroll',toVisible: 'true',:element => find_element(:xpath,tablegroup1_xpath).ref 
                 end
             else
                 tablegroup_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Tablegroup_xpath, elementName)
-                wndw_xpath ="//UIATableView[1]"
-                section_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::TablegroupsinHome_xpath, elementName) 
+                #wndw_xpath ="//UIATableView[1]"
+                section_xpath = CommonObjects.ReplaceString(CommonObjects::StaticText_xpath, elementName) 
                 tablegroupisvisiable = UtilsMobile.GetElementWithXpath(driverEle,section_xpath,40,false,nil,true)
                 if tablegroupisvisiable == false
-                    begin
-                        UtilsMobile.ScrollElementToVisibilty(wndw_xpath,section_xpath)
-                    rescue Exception => e
-                        if (e.message.include? "scrollToVisible cannot be used because this element has no scrollable ancestor.")
-                                count = count + 1
-                                 if count < 3
-                                   retry
-                                end
-                        end
-                    end
+                    driver.execute_script 'mobile: scroll',toVisible: 'true',:element => find_element(:xpath,section_xpath).ref 
                 end
             end
                 
@@ -117,7 +99,7 @@ module UtilsIphone
             #Check the Required table group position is last or not
             position = 0
             for k in 1..totaltablegroups
-                xpath_Sectionstext = "//UIATableView[1]/UIATableGroup[#{k}]/UIAStaticText"
+                xpath_Sectionstext = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_tableGrp, "#{k}") 
                 section = UtilsMobile.GetElementWithXpath(driverEle, xpath_Sectionstext, 40, false,"tablecell",false)
                 if section != false
                     tickername = section.text
@@ -141,7 +123,7 @@ module UtilsIphone
                 count1 = 0
             else
                 if elementName == "Events Summary"
-                    nexttablegroup_xpath = "//UIATableGroup[contains(@name ,'Events Summary')]/following-sibling::UIATableGroup[1]/following-sibling::UIATableCell"
+                    nexttablegroup_xpath = IPhoneHomePagePO::EventSmryTbleGrpXpath   # "//UIATableGroup[contains(@name ,'Events Summary')]/following-sibling::UIATableGroup[1]/following-sibling::UIATableCell"
                 else
                     nexttablegroup_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Tablegroup1_xpath, elementName)
                 end
@@ -171,6 +153,7 @@ module UtilsIphone
         Log.CloseUtility
       end
     end
+=begin    
 #========================================================================================#
 #    FUNCTION: IphoneAddNewsHeadLinesToDrive                                             #
 #                                                                                        #
@@ -279,6 +262,7 @@ module UtilsIphone
           return false
       end
   end
+=end  
   #=========================================================================================#     
   #    FUNCTION: DisableAndSelectportfolios                                                             # 
   #                                                                                         #
@@ -306,6 +290,7 @@ module UtilsIphone
                activatedbtn = UtilsMobile.GetElementWithXpath(driverEle,activatedradiobtn_xpath,20,false,nil,true)
                 if activatedbtn == false
                     #wndw_xpath ="//UIATableView[1]"
+                    
                     UtilsMobile.ScrollElementToVisibilty(wndw_xpath,activatedradiobtn_xpath)
                     flag = 3
                     activatedbtn = UtilsMobile.GetElementWithXpath(driverEle,activatedradiobtn_xpath,20,true,nil,true) 

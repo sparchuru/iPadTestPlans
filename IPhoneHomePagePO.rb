@@ -27,7 +27,7 @@ module IPhoneHomePagePO
   Xpath_tableGrp = "//XCUIElementTypeTable[1]/XCUIElementTypeOther[@varData]/XCUIElementTypeStaticText"
        #"//UIAApplication/UIAWindow/UIATableView[1]/UIATableGroup"
     #Open the story under the tablegroup if label is present
-    Pctablecell_xpath = "//UIATableGroup[@name='Portfolio Contribution Summary']/following-sibling::UIATableCell/UIAStaticText[@label='@varData']"
+    Pctablecell_xpath = "//XCUIElementTypeStaticText[@label='Portfolio Contribution Summary']/ancestor::XCUIElementTypeOther/following-sibling::XCUIElementTypeCell/XCUIElementTypeStaticText[@label='@varData']"
     Wlisttablecell_xpath = "//UIATableGroup[@name='Watch List Summary']/following-sibling::UIATableCell/UIAStaticText[@label='@varData']"
     Eventsummarytablecell_xpath = "//UIATableGroup[contains(@name,'Events Summary')]/following-sibling::UIATableCell/UIAStaticText[@label='@varData']"
     # count the number of tablecell in middle tablegroup
@@ -43,9 +43,16 @@ module IPhoneHomePagePO
     Xpath_Newsheadlines   = "//UIATableView[@label = 'FDSNewsHeadlinesTableViewController']/UIATableCell"
     Xpath_Newsheadline  = "//UIATableView[@label = 'FDSNewsHeadlinesTableViewController']/UIATableCell[1]"
     Xpath_facebookStry  = "//UIAStaticText[contains(@label,'@varData')]"
-  
-    def IPhoneHomePagePO.ReplaceString(xpath, replacingWord, originalWord = "@varData")
-        return xpath.gsub originalWord, replacingWord
+    Xpath_TbleCelsUndrSection = "//XCUIElementTypeCell[preceding-sibling::XCUIElementTypeOther/XCUIElementTypeStaticText[@label = '@varData'] and following-sibling::XCUIElementTypeOther][@secondparam]/XCUIElementTypeStaticText[1]"
+    Xpath_TbleCelsUndrLastSection = '//XCUIElementTypeOther[@varData]/follwing-sibling::XCUIElementTypeCell/XCUIElementTypeStaticText'
+    Xpath_sectionsInHome = '//XCUIElementTypeOther/XCUIElementTypeStaticText'
+    def IPhoneHomePagePO.ReplaceString(xpath, replacingWord, replacingWord1 = nil ,originalWord = "@varData",originalWord1 = '@secondparam')
+        if replacingWord1 == nil
+           return xpath.gsub originalWord, replacingWord
+        else
+            return (xpath.gsub originalWord, replacingWord).gsub(originalWord1,replacingWord1)
+        end  
+        
     end
     
 end 

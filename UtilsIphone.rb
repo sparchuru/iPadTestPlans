@@ -146,6 +146,7 @@ module UtilsIphone
                     return false
                 end
             end
+            return count1 
       rescue Exception => e
         Log.Error e
         return false
@@ -153,108 +154,57 @@ module UtilsIphone
         Log.CloseUtility
       end
     end
-=begin    
-#========================================================================================#
-#    FUNCTION: IphoneAddNewsHeadLinesToDrive                                             #
-#                                                                                        #
-#    NOTES: Use this function to open news and added to drive which was not added already#
-#                                                                                        #
-#    RETURN: return false if any thing goes wrong.                                       #
-#========================================================================================#
    
-   
-  def UtilsIphone.IphoneAddNewsHeadLinesToDrive(stepID=nil,driver=nil,numofheadlines = nil)
+#=====================================================================================================================#
+#    FUNCTION: VerifyAddedPortFliosTextInHome                                                                         #
+#                                                                                                                     #
+#    NOTES: Use this function to verify if the added portfolios and watchlist showing under appropriate section or not#
+#                                                                                                                     #
+#    RETURN: return false if any thing goes wrong.                                                                    #
+#=====================================================================================================================#
+  
+  def UtilsIphone.VerifyAddedPortFliosTextInHome(stepId ,driverEle = nil , section = nil , expctdNumPrtFolios = nil, expctedArr = nil, expctedArr1=nil)
       begin  
-          if driver.nil? || numofheadlines.nil?  then
-              Log.Warning "pass in valid arguments"
+          if driverEle.nil? || expctdNumPrtFolios.nil? ||section.nil?  then
+              Log.Error "pass in valid arguments"
               return false
            end
-          textarray = []
-          count = 0
-          newsHeadline_xpath = '//UIATableView[@label="FDSNewsHeadlinesTableViewController"]/UIATableCell'
-          newsHdLinesFound = UtilsMobile.GetElementsWithXpath(driver, newsHeadline_xpath,20,false)
-          if newsHdLinesFound != false
-              totalNewsHeadLines = newsHdLinesFound.length
-          else
-              Log.Error("Test step #{stepID}: No news headlines found under selected section to add to drive.") 
-              Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-              return false
-          end
-          for i in 1..totalNewsHeadLines
-              newsHeadline_xpath = "//UIATableView[@label='FDSNewsHeadlinesTableViewController']/UIATableCell[#{i}]"
-              newsHdLinesFound = UtilsMobile.GetElementWithXpath(driver, newsHeadline_xpath,20,false,nil,false)
-              if newsHdLinesFound != false
-                  openedStry = UtilsMobile.GetElementWithXpath(driver,newsHeadline_xpath, 20, false,nil,false)
-                  if openedStry != false
-                     openedStryText =  openedStry.text
-                  else
-                      Log.Error("Test step #{stepId}: News head lines under news tab not found after tap on news tab.") 
-                      Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(oPage)}", "Screencapture")
+            arr1 = expctedArr
+            position = 0;
+            allSections = UtilsMobile.GetElementsWithXpath(driverEle,IPhoneHomePagePO::Xpath_sectionsInHome, 20, false,"Portfolio section",false)
+            for j in 0 .. allSections.length-1
+                if section ==  allSections[j].label
+                    position = position +1
+                    break;
+                else
+                    position = position +1
+                end
+            end 
+            if position == allSections.length
+                place = 'last'
+            end
+
+             if place == 'last'
+                  pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrLastSection,allSections.length)
+                  portfoliotablecell = UtilsMobile.GetElementWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
+                  for i in 0 .. expctedArr.length-1
+                       if portfoliotablecell[i].label != arr1[i]
+                          Log.Error("Test step #{stepId}:selected Portfolio #{expctedArr[i]} doesn't appear under the Portfolio Contribution Summary section in home page.")
+                          Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                          return false
+                       end
+                  end
+            else  
+               for i in 1 .. expctedArr.length   
+                  pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrSection, section,"#{i}")
+                  portfoliotablecell = UtilsMobile.GetElementWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
+                  if  arr1[i-1] !=  portfoliotablecell.label   
+                      Log.Error("Test step #{stepId}:selected Portfolio #{arr1[i-1]} doesn't appear under the Portfolio Contribution Summary section in home page.")
+                      Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
                       return false
                   end
-                  newsHdLinesFound.click
-                  UtilsGeneralSettings.VerifyOpenStory(driver)
-                  xpath_delete = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,"Delete") 
-                  deltedBtn = UtilsMobile.GetElementWithXpath(driver, xpath_delete,20,false)
-                  if deltedBtn == false
-                      addtoDriveBtn_xpath = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,"Add to Drive")
-                      addtoDrvBtn = UtilsMobile.GetElementWithXpath(driver, addtoDriveBtn_xpath,20,false)
-                      if addtoDrvBtn != false
-                        addtoDrvBtn.click
-                        count = count +1
-                        textarray <<  openedStryText
-                        addtoDriveBtn_xpath = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,"Add to Drive") 
-                        addtoDrvBtn = UtilsMobile.GetElementWithXpath(driver, addtoDriveBtn_xpath,40,false)
-                        if addtoDrvBtn != false
-                           Log.Error("Test step #{stepID}: Drive button still appearing in the page after click operation on it.") 
-                           Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-                           return false
-                        end
-                         
-                              
-                        if count == numofheadlines
-                          break
-                        else
-                            doneBtnXpath = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,"DONE")
-                            doneBtn = UtilsMobile.GetElementWithXpath(driver,doneBtnXpath, 40, false)
-                            if doneBtn != false
-                               doneBtn.click
-                            else
-                               Log.Error("Test step #{stepID}: Done button not found after click operation on add to drive.") 
-                               Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-                               return false
-                            end  
-                        end
-                        
-                      else
-                          Log.Error("Test step #{stepID}: Add to drive button not found after opening the news headline to add to drive.") 
-                          Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-                          return false
-                      end
-                      
-                  else
-                     doneBtnXpath = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,"DONE")   
-                     doneBtn = UtilsMobile.GetElementWithXpath(driver,doneBtnXpath, 40, false)
-                     if doneBtn != false
-                        doneBtn.click
-                     else
-                          Log.Error("Test step #{stepID}: Done button not found after click operation on add to drive.") 
-                          Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-                          return false
-                     end
-                  end
-              else
-                  Log.Error("Test step #{stepID}: No news headlines found under selected section to add to drive.") 
-                  Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-                  return false
-              end
-			 if i == totalNewsHeadLines
-				 Log.Error("Test step #{stepID}: All the news headlines are already added to the drive hence we can't proceed furthur.") 
-				 Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driver)}", "Screencapture")
-				 return false
-			 end
-          end
-          return textarray
+               end   
+           end
           
         
       rescue Exception => e
@@ -262,11 +212,11 @@ module UtilsIphone
           return false
       end
   end
-=end  
+
   #=========================================================================================#     
-  #    FUNCTION: DisableAndSelectportfolios                                                             # 
+  #    FUNCTION: DisableAndSelectportfolios                                                 # 
   #                                                                                         #
-  #    NOTES: Disable And  Select the portfolios/Watch lists.                                                        #
+  #    NOTES: Disable And  Select the portfolios/Watch lists.                                              #
   #   one parameter is mandatory with                                                       #
   #   1st parameter being the step id .                                                     #
   #   2nd parameter being the driver object and 3rd is number of portfolios to be select.                                                #

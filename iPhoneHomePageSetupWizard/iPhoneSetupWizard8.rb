@@ -7,7 +7,7 @@ def RuniPhoneSetupWizard8()
     Log.TestCase(128328, "iPhoneSetupWizard8")
     get_driver(Configuration.capabilities, Configuration.server_url) 
     oPage = Watir::Browser.new driver
- 
+
 ############################################################################################################
 # NOTE: Here We don't have log in test step id's. So i gave zeros as test step id's 
   stepId = "000000,000000,000000"
@@ -55,7 +55,7 @@ def RuniPhoneSetupWizard8()
       ensure
         Log.CloseTestStep
       end
-     
+   
 ################################### Test Step  #############################################################
     stepId = 621713
     Log.TestStep(stepId, "Launch Home Page Wizard")
@@ -464,18 +464,19 @@ def RuniPhoneSetupWizard8()
           if UtilsMobile.TapElementWithXpath(oPage,yesbutton_xpath,20,true,true,"yes button ") == false
               return false
           end
+       
           #Verify the Four news headlines appear under the "Portfolio Contribution Summary" section in the Homepage.
-          if UtilsIphone.VerifyNewsheadlinesinHome(stepId,oPage, "Portfolio Contribution Summary",2,true) == false
-              return false
+          
+          if UtilsIphone.VerifyAddedPortFliosTextInHome(stepId, oPage, "Portfolio Contribution Summary", 2, arr1) == false
+             return false
           end
-          
-          
+
           #Verify the Four news headlines appear under the "Watch List Summary" section in the Homepage.
-          if UtilsIphone.VerifyNewsheadlinesinHome(stepId,oPage, "Watch List Summary",2,true) == false
-              return false
-          end
           
-          # #Verify the four watchlist appear under the "Watch List Summary" section in the Homepage.
+          if UtilsIphone.VerifyAddedPortFliosTextInHome(stepId, oPage, "Watch List Summary", 2, arr2) == false
+             return false
+          end
+  
           
           #Verify the  "Events Summary" section appear in the Homepage.
           eventsummary_xpath =  CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath, "Events Summary") #"//UIATableGroup[contains(@name,'Events Summary' )]"

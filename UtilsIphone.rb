@@ -183,26 +183,41 @@ module UtilsIphone
             if position == allSections.length
                 place = 'last'
             end
-
+            section_xpath = CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath,section)
+            driver.execute_script 'mobile: scroll',toVisible: 'true',:element => find_element(:xpath,section_xpath).ref 
+            
              if place == 'last'
-                  pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrLastSection,allSections.length)
-                  portfoliotablecell = UtilsMobile.GetElementWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
-                  for i in 0 .. expctedArr.length-1
-                       if portfoliotablecell[i].label != arr1[i]
-                          Log.Error("Test step #{stepId}:selected Portfolio #{expctedArr[i]} doesn't appear under the Portfolio Contribution Summary section in home page.")
-                          Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
-                          return false
-                       end
+                  pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrLastSection,"#{allSections.length}")
+                  portfoliotablecell = UtilsMobile.GetElementsWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
+                  if portfoliotablecell.length > 0
+                      for i in 0 .. expctedArr.length-1
+                           if portfoliotablecell[i].label != arr1[i]
+                              Log.Error("Test step #{stepId}:selected Portfolio/watch list doesnt appear under section in home ")
+                              Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                              return false
+                           end
+                      end
+                  else
+                       Log.Error("Test step #{stepId}:selected Portfolio/watch list doesnt appear under section in home ")
+                       Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                       return false
                   end
+                      
             else  
                for i in 1 .. expctedArr.length   
                   pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrSection, section,"#{i}")
                   portfoliotablecell = UtilsMobile.GetElementWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
-                  if  arr1[i-1] !=  portfoliotablecell.label   
-                      Log.Error("Test step #{stepId}:selected Portfolio #{arr1[i-1]} doesn't appear under the Portfolio Contribution Summary section in home page.")
-                      Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
-                      return false
-                  end
+                  if portfoliotablecell != false
+                      if  arr1[i-1] !=  portfoliotablecell.label   
+                          Log.Error("Test step #{stepId}:selected Portfolio/watch list doesnt appear under section in home ")
+                          Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                          return false
+                      end
+                  else
+                       Log.Error("Test step #{stepId}:selected Portfolio/watch list doesnt appear under section in home ")
+                       Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                       return false
+                  end    
                end   
            end
           

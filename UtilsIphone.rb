@@ -169,9 +169,10 @@ module UtilsIphone
               Log.Error "pass in valid arguments"
               return false
            end
+           
             arr1 = expctedArr
             position = 0;
-            allSections = UtilsMobile.GetElementsWithXpath(driverEle,IPhoneHomePagePO::Xpath_sectionsInHome, 20, false,"Portfolio section",false)
+            allSections = UtilsMobile.GetElementsWithXpath(driverEle,IPhoneHomePagePO::Xpath_sectionsInHome, 20, false)
             for j in 0 .. allSections.length-1
                 if section ==  allSections[j].label
                     position = position +1
@@ -183,9 +184,11 @@ module UtilsIphone
             if position == allSections.length
                 place = 'last'
             end
-            section_xpath = CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath,section)
+            if section.include?"Events Summary"
+               section = "Events Summary"
+            end
+            section_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_specificCellUndrSection,section,"#{expctedArr.length}") #CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath,section)
             driver.execute_script 'mobile: scroll',toVisible: 'true',:element => find_element(:xpath,section_xpath).ref 
-            
              if place == 'last'
                   pctablecell_xpath = IPhoneHomePagePO.ReplaceString(IPhoneHomePagePO::Xpath_TbleCelsUndrLastSection,"#{allSections.length}")
                   portfoliotablecell = UtilsMobile.GetElementsWithXpath(driverEle,pctablecell_xpath, 20, false,"portfolios",false)
@@ -322,6 +325,50 @@ module UtilsIphone
         Log.CloseUtility
       end
     end
+################################################################################################
+#  FUNCTION: VerifyQuestionPage                                                                #
+#  NOTES : to verify the question , Yes ,No  and Skip options in a Page  
+#   1st parameter being the step id .                                                          #
+#   2nd parameter being the driver object and 3rd is ticker Name to check enabled or not .  
+#                                                                                              #
+################################################################################################
+  def UtilsIphone.VerifyQuestionPage(stepId,driverEle=nil,arrExp)
+      begin
+        Log.Utility("UtilsIphone::EnableHomePageTickers")
+        if driverEle.nil? || arrExp.nil?
+          Log.Warning "Passed invalid arguments"
+          return false
+        end
+        for i in arrExp
+            keyword = i
+            question_xpath = CommonObjects.ReplaceString(CommonObjects::ContainsLabel_xpath,keyword);
+            question =UtilsMobile.GetElementWithXpath(driverEle,question_xpath,20, false)
+            if question == false
+                Log.Error("Test step #{stepId}: question/message -  #{i} not found in the page")
+                Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                return false
+            end
+        end
+        array = ["YES","NO","Skip"]
+        for i in array
+            keyword = i
+            element_xpath = CommonObjects.ReplaceString(CommonObjects::ButtonType_xpath,keyword);
+            element = UtilsMobile.GetElementWithXpath(driverEle,element_xpath,20, false)
+            if element == false
+                Log.Error("Test step #{stepId}: #{i} button not found in the page.")
+                Log.Picture("#{UtilsMobile.TakeSimulatorScreenshot(driverEle)}", "Screencapture")
+                return false
+            end
+        end 
+        return true
+      rescue Exception => e
+        Log.Error e
+        return false
+      ensure      
+        Log.CloseUtility
+      end
+  end
+
 ################################################################################################
 #  FUNCTION: EnableHomePageOptions                                                             #
 #  NOTES : to enable the hme page tickers from edit window 

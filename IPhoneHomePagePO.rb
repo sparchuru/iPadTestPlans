@@ -6,7 +6,7 @@ module IPhoneHomePagePO
     Xpath_searchIcon = "//UIAButton[@label='Search']"
     Xpath_newsHeadline = "//UIATableGroup[contains(@name,'@varData')]"
     Xpath_newsHeadlineUndrSection = "//UIATableGroup[contains(@name,'@varData')]/following-sibling::UIATableGroup[1]/preceding-sibling::UIATableCell[1]"
-    Xpath_newsHeadlineUndrLastSection = "//UIATableGroup[contains(@name,'@varData')]/following-sibling::UIATableCell[1]"
+    Xpath_newsHeadlineUndrLastSection = '//XCUIElementTypeStaticText[contains(@label,"@varData")]/ancestor::XCUIElementTypeOther[1]/following-sibling::XCUIElementTypeCell[1]//XCUIElementTypeStaticText'
     Xpath_doneBtnInStryPage = "//UIAButton[@label='DONE']"
     Xpath_sectionType ='//UIATableView[contains(@label,"@varData")]'
     Xpath_sectionPageOpened = "//UIAButton[@labe='@varData']"
@@ -43,9 +43,11 @@ module IPhoneHomePagePO
     Xpath_Newsheadlines   = "//UIATableView[@label = 'FDSNewsHeadlinesTableViewController']/UIATableCell"
     Xpath_Newsheadline  = "//UIATableView[@label = 'FDSNewsHeadlinesTableViewController']/UIATableCell[1]"
     Xpath_facebookStry  = "//UIAStaticText[contains(@label,'@varData')]"
-    Xpath_TbleCelsUndrSection = "//XCUIElementTypeCell[preceding-sibling::XCUIElementTypeOther/XCUIElementTypeStaticText[@label = '@varData'] and following-sibling::XCUIElementTypeOther][@secondparam]/XCUIElementTypeStaticText[1]"
-    Xpath_TbleCelsUndrLastSection = '//XCUIElementTypeOther[@varData]/follwing-sibling::XCUIElementTypeCell/XCUIElementTypeStaticText'
+    Xpath_TbleCelsUndrSection = "//XCUIElementTypeCell[preceding-sibling::XCUIElementTypeOther/XCUIElementTypeStaticText[contains(@label,'@varData')] and following-sibling::XCUIElementTypeOther][@secondparam]/XCUIElementTypeStaticText[1]"
+    Xpath_TbleCelsUndrLastSection = '//XCUIElementTypeOther[@varData]/following-sibling::XCUIElementTypeCell/XCUIElementTypeStaticText[1]'
     Xpath_sectionsInHome = '//XCUIElementTypeOther/XCUIElementTypeStaticText'
+    Xpath_specificCellUndrSection = '//XCUIElementTypeStaticText[contains(@label,"@varData")]/ancestor::XCUIElementTypeOther[1]/following-sibling::XCUIElementTypeCell[@secondparam]//XCUIElementTypeStaticText'
+   # Xpath_firstHdLineUndrSection = '//XCUIElementTypeStaticText["@varData"]/ancestor::XCUIElementTypeOther[1]/following-sibling::XCUIElementTypeCell[1]'
     def IPhoneHomePagePO.ReplaceString(xpath, replacingWord, replacingWord1 = nil ,originalWord = "@varData",originalWord1 = '@secondparam')
         if replacingWord1 == nil
            return xpath.gsub originalWord, replacingWord

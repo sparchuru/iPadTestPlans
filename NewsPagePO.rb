@@ -9,7 +9,7 @@ module NewsPagePO
   AddtoDriveBtn_xpath = "//UIAButton[@label='Docvault']" 
   #AddedtoDrivePopup_xpath = ''
   OkBtnInPopup_xpath = '//UIAButton[@label="OK"]'
-  
+  FstNewsHdLineUndrSection = '//XCUIElementTypeTable[@label="FDSNewsHeadlinesTableViewController"]//XCUIElementTypeCell[1]'
 def NewsPagePO.ReplaceString(xpath, replacingWord, originalWord = "@varData")
            return xpath.gsub originalWord, replacingWord
     end

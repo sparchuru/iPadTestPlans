@@ -12,7 +12,7 @@ module HomePagePO
      UpdtePrmptRmdLtrBtn = "//XCUIElementTypeAlert[@label='App Upgrade Prompt']//XCUIElementTypeButton[@label='Remind me later']"
      UpdtePrmptOkBtn = "//XCUIElementTypeAlert[@label='App Upgrade Prompt']//XCUIElementTypeButton[@label='OK']"
      
-     PageIndicatorXpath = "//XCUIElementTypePageIndicator[@value='@varData']"
+     PageIndicatorXpath = "//XCUIElementTypePageIndicator[(contains(@value,'@varData'))]"
      PageIndicatorValXpath = "//XCUIElementTypePageIndicator[1]"
      TutorialXpath = "//XCUIElementTypeImage[contains(@name,'@varData')]"
      CustmizXpath = "//XCUIElementTypeStaticText[contains(@label,'Home Page Setup')]" 
@@ -26,15 +26,7 @@ module HomePagePO
      HamburgerMenuTxtBtns_xpath = "//XCUIElementTypeTable[@label='Home menu']//XCUIElementTypeCell[@label = '@varData']"
      StaticTxtFldXpath = "//XCUIElementTypeStaticText[@label='@varData']"
      
-     Watchlist_xpath = "//XCUIElementTypeStaticText[@label='WATCH LISTS']" # Watch List after click on Hamburger
-     
-     
-     
-     
-     
-     
-     
-     
+     Watchlist_xpath = "//XCUIElementTypeStaticText[@label='WATCH LISTS']" # Watch List after click on Hamburger     
      #Watchlistwndw_xpath = "//XCUIElementTypeOther[@label='Filter Watch Lists']" #  Filter Watch List search  moved to selectwatclist
       #"//UIASearchBar[@label='Select a Watch List']"  # "//UIAElement[@label='Filter Watch Lists']" # 
      #FirstWatchlist_xpath = "//UIAElement[@label='Filter Watch Lists']/following-sibling::UIATableCell[1]/UIAStaticText" moved to selectwatclist
